@@ -38,6 +38,8 @@ class Game:
         # Game loop: events - update - draw
         self.playing = True
         self.obstacle_manager.reset_obstacles()
+        self.score = 0
+        self.game_speed = 20
         while self.playing:
             self.events()
             self.update()
@@ -85,6 +87,13 @@ class Game:
         text_rect.center = (1000, 50)
         self.screen.blit(text, text_rect)
 
+    def draw_text(self, text, font_size, position):
+        font = pygame.font.Font(FONT_STYLE, font_size)
+        rendered_text = font.render(text, True, (0, 0, 0))
+        text_rect = rendered_text.get_rect()
+        text_rect.center = position
+        self.screen.blit(rendered_text, text_rect)
+
     def handle_events_on_menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -99,20 +108,13 @@ class Game:
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:
-            font = pygame.font.Font(FONT_STYLE, 22)
-            text = font.render("Press any key to start", True, (0, 0, 0))
-            text_rect = text.get_rect()
-            text_rect.center = (half_screen_width, half_screen_height)
-            self.screen.blit(text, text_rect)
+            self.draw_text("Press any key to start", 22, (half_screen_width, half_screen_height))
         else:
             self.screen.blit(ICON, (half_screen_width - 20, half_screen_height - 140))
-            ## mostrar mensagem de 'Press any key to restart'
-            ## mostrar score atingido
-            ## mostrar death_count
+            self.draw_text("Press any key to restart", 22, (half_screen_width, half_screen_height))
+            self.draw_text(f"Score: {self.score}", 22, (half_screen_width, half_screen_height + 30))
+            self.draw_text(f"Death Count: {self.death_count}", 22, (half_screen_width, half_screen_height + 60))
 
-            ### Resetar score e game_speed quando reiniciar uma nova rodada do jogo
-            ### Criar método para remover a repetição de código para o texto
-        
         pygame.display.update()
 
         self.handle_events_on_menu()
